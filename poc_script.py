@@ -9,7 +9,7 @@ filetypes = ['photo', 'text', 'audio', 'document', 'sticker', 'video', 'voice', 
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, "¡Bienvenido! Envía una imagen y la guardaré:")
+    bot.reply_to(message, "¡Bienvenido! Envía una archivo y la guardaré:")
 
 
 @bot.message_handler(content_types=filetypes)
