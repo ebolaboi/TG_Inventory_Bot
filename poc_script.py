@@ -64,7 +64,7 @@ def back_menu(message, text, opt1):
 
 @bot.message_handler(content_types=filetypes)
 def handle_files(message):
-    if function_params[0] = True
+    if function_params[0] == True:
         if message.content_type == 'text':
             directory_name = message.text.strip()
 
