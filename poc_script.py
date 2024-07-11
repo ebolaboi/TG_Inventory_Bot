@@ -51,7 +51,7 @@ def handleAllMessages(message):
     try:
         bot.send_message(chat_id=message.chat.id, text=moai)
     except Exception as e:
-        print(f'EXCEPTION: {e}'')
+        print(f'EXCEPTION: {e}')
 
 
 @bot.message_handler(commands=['start'])
