@@ -20,6 +20,7 @@ def send_welcome(message):
 @bot.message_handler(commands=['menu'])
 def send_menu(message):
     # main_menu = main_menu_markup()
+    main_menu_text = "Elige una opción:"
     main_menu = [
         ["Cliente", 'client'],
         ["Proveedor", 'vendor'],
@@ -27,7 +28,7 @@ def send_menu(message):
     ]
 
     main_menu_markup = menu_markup(num_rows=2, menu_info=main_menu)
-    bot.send_message(message.chat.id, "Elige una opción:", main_menu_markup)
+    bot.send_message(message.chat.id, main_menu_text, main_menu_markup)
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -87,7 +88,7 @@ def menu_markup(num_rows, menu_info):
 
 @bot.message_handler(content_types=filetypes)
 def handle_files(message):
-    if function_params[0] = True
+    if function_params[0] == True:
         if message.content_type == 'text':
             directory_name = message.text.strip()
 
