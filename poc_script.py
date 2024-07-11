@@ -13,7 +13,7 @@ filetypes = ['photo', 'text', 'audio', 'document', 'sticker', 'video', 'voice', 
 function_params = [False, False, False]
 
 
-def mainMenu(tgmessage):
+def mainMenu():
     main_menu_text = "Elige una opción:"
     main_menu = [
         ["Cliente", 'client'],
@@ -31,7 +31,7 @@ def send_welcome(message):
 
 @bot.message_handler(commands=['menu'])
 def send_menu(message):
-    menu_text, menu = mainMenu(message)
+    menu_text, menu = mainMenu()
     menu_markup = menuMarkup(num_rows=2, menu_info=menu)
     bot.send_message(chat_id=message.chat.id, text=menu_text, reply_markup=menu_markup)
 
