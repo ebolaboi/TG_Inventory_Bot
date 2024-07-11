@@ -58,6 +58,7 @@ def handle_query(call):
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Elige una opción", reply_markup=main_menu_markup())
 
     elif call.data == "client_menu":
+        print("PENDING CLIENT MENU")
 
     else:
         bot.answer_callback_query(call.id, "Opción no reconocida")
