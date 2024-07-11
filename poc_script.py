@@ -159,4 +159,5 @@ def handle_files(message):
 os.makedirs('tgdownloads', exist_ok=True)
 
 # Start polling
-bot.polling(timeout=60, long_polling_timeout=60)
+# bot.polling(timeout=60, long_polling_timeout=60)
+bot.infinity_polling(timeout=10, long_polling_timeout = 5)
