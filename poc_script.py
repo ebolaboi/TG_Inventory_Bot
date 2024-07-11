@@ -21,6 +21,8 @@ def mainMenu(tgmessage):
         ["Soporte Técnico", 'techsupport']
     ]
 
+    return main_menu_text, main_menu
+
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -29,8 +31,8 @@ def send_welcome(message):
 
 @bot.message_handler(commands=['menu'])
 def send_menu(message):
-    menu = mainMenu(message)
-    menu_markup = menuMarkup(num_rows=2, menu_info=main_menu)
+    menu_text, menu = mainMenu(message)
+    menu_markup = menuMarkup(num_rows=2, menu_info=menu)
     bot.send_message(chat_id=message.chat.id, text=main_menu_text, reply_markup=menu_markup)
 
 
@@ -59,9 +61,9 @@ def handle_query(call):
 
     elif call.data == "back":
         bot.answer_callback_query(call.id, "Back")
-        menu = mainMenu()
+        menu_text, menu = mainMenu()
         menu_markup = menuMarkup(num_rows=2, menu_info=menu)
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Elige una opción:", reply_markup=menu_markup)
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=menu_text, reply_markup=menu_markup)
 
     elif call.data == "client_menu":
         print("PENDING CLIENT MENU")
