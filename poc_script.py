@@ -1,4 +1,5 @@
 import os
+import json
 import telebot
 import requests
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -11,16 +12,6 @@ filetypes = ['photo', 'text', 'audio', 'document', 'sticker', 'video', 'voice', 
 # Register, Delete, Edit
 function_params = [False, False, False]
 
-def main_menu_markup():
-    menu = InlineKeyboardMarkup()
-    menu.row_width = 1
-    menu.add(
-        InlineKeyboardButton("Registrar objeto", callback_data="register"),
-        InlineKeyboardButton("Eliminar objeto", callback_data="delete"),
-        InlineKeyboardButton("Editar objeto", callback_data="edit"))
-
-    return menu
-
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     bot.reply_to(message, "¡Bienvenido! Envía /menu para ver opciones.")
@@ -28,38 +19,69 @@ def send_welcome(message):
 
 @bot.message_handler(commands=['menu'])
 def send_menu(message):
-    main_menu = main_menu_markup()
-    bot.send_message(message.chat.id, "Elige una opción:", reply_markup=main_menu)
+    # main_menu = main_menu_markup()
+    main_menu = [
+        ["Cliente", 'client'],
+        ["Proveedor", 'vendor'],
+        ["Soporte Técnico", 'techsupport']
+    ]
+
+    main_menu_markup = menu_markup(num_rows=2, menu_info=main_menu)
+    bot.send_message(message.chat.id, "Elige una opción:", main_menu_markup)
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
-    if call.data == "register":
-        bot.answer_callback_query(call.id, "Registrar")
-        back_menu(call.message, "Envía el nombre del objeto nuevo:", 'back')
+    if call.data == "client":
+        bot.answer_callback_query(call.id, "Cliente")
+
+        menu_text = "Elige una opción:"
+        client_menu = [
+            ["Catálogo", 'catalog'],
+            ["Atrás", 'back']
+        ]
+
+        client_menu_markup = menu_markup(num_rows=1, menu_info=client_menu)
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=menu_text, reply_markup=client_menu_markup)
         function_params[0] = True
 
-    elif call.data == "delete":
-        bot.answer_callback_query(call.id, "Eliminar")
+    elif call.data == "vendor":
+        bot.answer_callback_query(call.id, "Proveedor")
         back_menu(call.message, "Envía el nombre del objeto para eliminar:", 'back')
 
-    elif call.data == "edit":
-        bot.answer_callback_query(call.id, "Editar")
+    elif call.data == "techsupport":
+        bot.answer_callback_query(call.id, "Soporte Técnico")
         back_menu(call.message, "Envía el nombre del objeto para editar:", 'back')
 
     elif call.data == "back":
         bot.answer_callback_query(call.id, "Back")
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Elige una opción", reply_markup=main_menu_markup())
 
+    elif call.data == "client_menu":
+
     else:
         bot.answer_callback_query(call.id, "Opción no reconocida")
 
 
-def back_menu(message, text, opt1):
+def menu_markup(num_rows, menu_info):
+    menu_json = {
+        'num_rows': num_rows,
+        'content': []
+    }
+
+    for item in menu_info:
+        json_element = {}
+        json_element['text'] = item[0]
+        json_element['callback'] = item[1]
+        print(json_element)
+        menu_json['content'].append(json_element)
+
     markup = InlineKeyboardMarkup()
-    markup.row_width = 1
-    markup.add(InlineKeyboardButton("Atrás", callback_data=opt1))
-    bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id, text=text, reply_markup=markup)
+    markup.row_width = num_rows
+    for element in menu_json['content']:
+        markup.add(InlineKeyboardButton(element['text'], callback_data=element['callback']))
+
+    return markup
 
 
 @bot.message_handler(content_types=filetypes)
@@ -77,6 +99,9 @@ def handle_files(message):
             invalid_chars = '<>:"/\\|?*'
             for char in invalid_chars:
                 directory_name = directory_name.replace(char, '_')
+
+            # Replace accented vowels in directory names
+            invalid_vowels = ['á', 'a']
 
             try:
                 os.makedirs(directory_name, exist_ok=True)
