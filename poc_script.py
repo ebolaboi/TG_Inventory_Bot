@@ -46,7 +46,7 @@ def menuMarkup(num_rows, menu_info):
     return markup
 
 
-@bot.message_handler(func=lambda message: True)
+@bot.message_handler(func=lambda message: not message.text.startswith('/'))
 def handleAllMessages(message):
     try:
         bot.send_message(chat_id=message.chat.id, text=moai)
