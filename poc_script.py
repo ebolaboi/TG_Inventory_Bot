@@ -28,7 +28,7 @@ def send_menu(message):
     ]
 
     main_menu_markup = menu_markup(num_rows=2, menu_info=main_menu)
-    bot.send_message(message.chat.id, main_menu_text, main_menu_markup)
+    bot.send_message(chat_id=message.chat.id, text=main_menu_text, reply_markup=main_menu_markup)
 
 
 @bot.callback_query_handler(func=lambda call: True)
