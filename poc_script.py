@@ -12,7 +12,7 @@ filetypes = ['photo', 'text', 'audio', 'document', 'sticker', 'video', 'voice', 
 # Register, Delete, Edit
 function_params = [False, False, False]
 
-moai = u'\U1F5FF'
+moai = u'\U0001F5FF'
 
 
 def mainMenu():
