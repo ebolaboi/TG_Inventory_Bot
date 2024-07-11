@@ -12,14 +12,8 @@ filetypes = ['photo', 'text', 'audio', 'document', 'sticker', 'video', 'voice', 
 # Register, Delete, Edit
 function_params = [False, False, False]
 
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-    bot.reply_to(message, "¡Bienvenido! Envía /menu para ver opciones.")
 
-
-@bot.message_handler(commands=['menu'])
-def send_menu(message):
-    # main_menu = main_menu_markup()
+def mainMenu(tgmessage):
     main_menu_text = "Elige una opción:"
     main_menu = [
         ["Cliente", 'client'],
@@ -27,8 +21,17 @@ def send_menu(message):
         ["Soporte Técnico", 'techsupport']
     ]
 
-    main_menu_markup = menu_markup(num_rows=2, menu_info=main_menu)
-    bot.send_message(chat_id=message.chat.id, text=main_menu_text, reply_markup=main_menu_markup)
+
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    bot.reply_to(message, "¡Bienvenido! Envía /menu para ver opciones.")
+
+
+@bot.message_handler(commands=['menu'])
+def send_menu(message):
+    menu = mainMenu(message)
+    menu_markup = menuMarkup(num_rows=2, menu_info=main_menu)
+    bot.send_message(chat_id=message.chat.id, text=main_menu_text, reply_markup=menu_markup)
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -42,21 +45,23 @@ def handle_query(call):
             ["Atrás", 'back']
         ]
 
-        client_menu_markup = menu_markup(num_rows=1, menu_info=client_menu)
+        client_menu_markup = menuMarkup(num_rows=1, menu_info=client_menu)
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=menu_text, reply_markup=client_menu_markup)
         function_params[0] = True
 
     elif call.data == "vendor":
         bot.answer_callback_query(call.id, "Proveedor")
-        back_menu(call.message, "Envía el nombre del objeto para eliminar:", 'back')
+        # back_menu(call.message, "Envía el nombre del objeto para eliminar:", 'back')
 
     elif call.data == "techsupport":
         bot.answer_callback_query(call.id, "Soporte Técnico")
-        back_menu(call.message, "Envía el nombre del objeto para editar:", 'back')
+        # back_menu(call.message, "Envía el nombre del objeto para editar:", 'back')
 
     elif call.data == "back":
         bot.answer_callback_query(call.id, "Back")
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Elige una opción", reply_markup=main_menu_markup())
+        menu = mainMenu()
+        menu_markup = menuMarkup(num_rows=2, menu_info=menu)
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Elige una opción:", reply_markup=menu_markup)
 
     elif call.data == "client_menu":
         print("PENDING CLIENT MENU")
@@ -65,7 +70,7 @@ def handle_query(call):
         bot.answer_callback_query(call.id, "Opción no reconocida")
 
 
-def menu_markup(num_rows, menu_info):
+def menuMarkup(num_rows, menu_info):
     menu_json = {
         'num_rows': num_rows,
         'content': []
@@ -75,7 +80,6 @@ def menu_markup(num_rows, menu_info):
         json_element = {}
         json_element['text'] = item[0]
         json_element['callback'] = item[1]
-        print(json_element)
         menu_json['content'].append(json_element)
 
     markup = InlineKeyboardMarkup()
