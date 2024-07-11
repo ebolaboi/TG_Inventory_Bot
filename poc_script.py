@@ -33,7 +33,7 @@ def send_welcome(message):
 def send_menu(message):
     menu_text, menu = mainMenu(message)
     menu_markup = menuMarkup(num_rows=2, menu_info=menu)
-    bot.send_message(chat_id=message.chat.id, text=main_menu_text, reply_markup=menu_markup)
+    bot.send_message(chat_id=message.chat.id, text=menu_text, reply_markup=menu_markup)
 
 
 @bot.callback_query_handler(func=lambda call: True)
